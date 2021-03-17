@@ -7,6 +7,7 @@
 
 import sys
 import BlinkyDataBaseManagment
+import support
 
 try:
     import Tkinter as tk
@@ -25,6 +26,8 @@ import os.path
 from functools import partial
 import LogicGui
 import BlinkyDataBaseManagment
+import sendMsgs
+import GUI
 
 w = None
 def create_UserPanel(root, *args, **kwargs):
@@ -110,7 +113,9 @@ class UserPanel:
         self.Logout.configure(pady="0")
         self.Logout.configure(text='''Logout''')
 
-        self.SendMsg = tk.Button(self.LoginFrame)
+        action_with_args = partial(sendMsgs.sendMsgtoMentorFromUser, self.UserID, self.ChangeList)
+
+        self.SendMsg = tk.Button(self.LoginFrame, command = action_with_args)
         self.SendMsg.place(relx=0.03, rely=0.022, height=33, width=177)
         self.SendMsg.configure(activebackground="#ececec")
         self.SendMsg.configure(activeforeground="#000000")
@@ -122,7 +127,25 @@ class UserPanel:
         self.SendMsg.configure(pady="0")
         self.SendMsg.configure(text='''Send message to mentor''')
 
+        action_with_args = partial(sendMsgs.sendEMERGENCYtoMentorFromUser, self.UserID)
+
+        self.EMERGENCY = tk.Button(self.LoginFrame, command=action_with_args)
+        self.EMERGENCY.place(relx=0.03, rely=0.085, height=33, width=177)
+        self.EMERGENCY.configure(activebackground="#ececec")
+        self.EMERGENCY.configure(activeforeground="#000000")
+        self.EMERGENCY.configure(background="#d9d9d9")
+        self.EMERGENCY.configure(disabledforeground="#a3a3a3")
+        self.EMERGENCY.configure(foreground="#000000")
+        self.EMERGENCY.configure(highlightbackground="#bce8f1")
+        self.EMERGENCY.configure(highlightcolor="red")
+        self.EMERGENCY.configure(pady="0")
+        self.EMERGENCY.configure(fg="red")
+        self.EMERGENCY.configure(text='''EMERGENCY''')
+        self.EMERGENCY.configure(borderwidth=10)
+
+
         self.medicalORdiet = ttk.Entry(self.LoginFrame)
+        self.medicalORdiet.bind("<1>", GUI.call_keyboard)
         self.medicalORdiet.place(relx=0.26, rely=0.031, relheight=0.029
                 , relwidth=0.166)
         self.medicalORdiet.configure(takefocus="")
@@ -156,7 +179,9 @@ class UserPanel:
         self.dietButton.configure(pady="0")
         self.dietButton.configure(text='''Add diet''')
 
-        self.Info = tk.Button(self.LoginFrame)
+        action_with_args = partial(support.support_U)
+
+        self.Info = tk.Button(self.LoginFrame,command=action_with_args)
         self.Info.place(relx=0.7, rely=0.022, height=33, width=155)
         self.Info.configure(activebackground="#ececec")
         self.Info.configure(activeforeground="#000000")
@@ -366,6 +391,7 @@ class UserPanel:
         self.ChangePicButton.configure(width=106)
 
         action_with_args = partial(BlinkyDataBaseManagment.UpdateChosenPhrase, self.UserID, self.ChangeList, top)
+
         self.ChangePhraseButton = tk.Button(self.LoginFrame, command=action_with_args)
         self.ChangePhraseButton.place(relx=0.85, rely=0.211, height=63
                 , width=106)
@@ -389,6 +415,7 @@ class UserPanel:
         self.NewPhrasesBox['values'] = BlinkyDataBaseManagment.loadAllPhrases(self.UserID)
 
         self.NewPhraseEntry = ttk.Entry(self.LoginFrame)
+        self.NewPhraseEntry.bind("<1>", GUI.call_keyboard)
         self.NewPhraseEntry.place(relx=0.61, rely=0.278, relheight=0.029
                 , relwidth=0.166)
         self.NewPhraseEntry.configure(takefocus="")
@@ -440,6 +467,7 @@ class UserPanel:
 
         self.ChangeList["LoginFrame"] = self.LoginFrame
         self.ChangeList["MedicalOrDiet"] = self.medicalORdiet
+        self.ChangeList["NewPhraseEntry"] = self.NewPhraseEntry
 
 
 

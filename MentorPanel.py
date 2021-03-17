@@ -10,6 +10,10 @@ import sys
 import Pmw
 
 import BlinkyDataBaseManagment
+import Forgot_password
+import Infohelp
+import sendMsgs
+import support
 
 try:
     import Tkinter as tk
@@ -24,15 +28,17 @@ except ImportError:
     py3 = True
 import LogicGui
 from functools import partial
-import tkFileDialog
+from tkinter import filedialog
+
 import BlinkyDataBaseManagment
+import sendMsgs
 global tempdir
 
 tempdir = ""
 tempdirList = {}
 
 def browse(entry):
-    tempdir = tkFileDialog.askopenfilename()
+    tempdir = filedialog.askopenfilename()
     entry.insert(0,tempdir)
     tempdirList["tempdir"] = tempdir
 
@@ -202,7 +208,9 @@ class MentorPanel:
         self.EntryMessageUser.configure(selectforeground="black")
         self.EntryMessageUser.configure(width=274)
 
-        self.Sendmsgbutton = tk.Button(self.MentorCntPnl)
+        action_with_args = partial(sendMsgs.sendMsgtoUserFromMentor, MentorID, MentorList)
+
+        self.Sendmsgbutton = tk.Button(self.MentorCntPnl,command = action_with_args)
         self.Sendmsgbutton.place(relx=0.738, rely=0.663, height=42, width=118)
         self.Sendmsgbutton.configure(activebackground="#ececec")
         self.Sendmsgbutton.configure(activeforeground="#000000")
@@ -237,7 +245,7 @@ class MentorPanel:
         self.ChooseUserLabel1.configure(text='''Choose User:''')
 
 #-------------------------------------------------------------------------------
-        ##### action_with_args = partial(myfunc, self, self.UserInput, top)
+        ##### action_with_args = partial(myfunc, self, self.UserInput, top) self.UserComboBox
         action_with_args = partial(BlinkyDataBaseManagment.user_info, MentorID)
         self.InfoBtn = tk.Button(self.MentorCntPnl,command=action_with_args)
         self.InfoBtn.place(relx=0.55, rely=0.788, height=42, width=108)
@@ -287,7 +295,9 @@ class MentorPanel:
         self.PswResetLabel.configure(highlightcolor="black")
         self.PswResetLabel.configure(text='''Password Reset:''')
 
-        self.PswResetButton = tk.Button(self.MentorCntPnl)
+        action_with_args = partial(Forgot_password.Forgot_password_M, MentorID)
+
+        self.PswResetButton = tk.Button(self.MentorCntPnl,command=action_with_args)
         self.PswResetButton.place(relx=0.563, rely=0.856, height=32, width=98)
         self.PswResetButton.configure(activebackground="#ececec")
         self.PswResetButton.configure(activeforeground="#000000")
@@ -299,7 +309,7 @@ class MentorPanel:
         self.PswResetButton.configure(pady="0")
         self.PswResetButton.configure(text='''Reset''')
 
-        action_with_args = partial(LogicGui.LogicGui.LogoutfromMentor,self,top)
+        action_with_args = partial(LogicGui.LogicGui.LogoutfromMentor, self, top)
 
         self.LogOutMenBtn = tk.Button(self.MentorCntPnl,command=action_with_args)
         self.LogOutMenBtn.place(relx=0.85, rely=0.013, height=32, width=98)
@@ -324,7 +334,11 @@ class MentorPanel:
         self.TechLabel.configure(highlightcolor="black")
         self.TechLabel.configure(text='''Support:''')
 
-        self.getSuppoertBtn = tk.Button(self.MentorCntPnl)
+
+
+        action_with_args = partial(support.support_M)
+
+        self.getSuppoertBtn = tk.Button(self.MentorCntPnl,command=action_with_args)
         self.getSuppoertBtn.place(relx=0.213, rely=0.925, height=32, width=118)
         self.getSuppoertBtn.configure(activebackground="#ececec")
         self.getSuppoertBtn.configure(activeforeground="#000000")
@@ -335,6 +349,8 @@ class MentorPanel:
         self.getSuppoertBtn.configure(highlightcolor="black")
         self.getSuppoertBtn.configure(pady="0")
         self.getSuppoertBtn.configure(text='''Get Support''')
+
+
 
         self.SendMsgLabel2 = tk.Label(self.MentorCntPnl)
         self.SendMsgLabel2.place(relx=0.05, rely=0.525, height=61, width=147)
@@ -418,7 +434,12 @@ class MentorPanel:
         self.SendFeedbackEntry.configure(insertbackground="black")
         self.SendFeedbackEntry.configure(width=274)
 
-        self.sendfeedbackbutton = tk.Button(self.MentorCntPnl)
+
+        ###############################################################################
+
+        action_with_args = partial(sendMsgs.sendFeedbackToContacts,MentorID,MentorList)
+
+        self.sendfeedbackbutton = tk.Button(self.MentorCntPnl,command=action_with_args)
         self.sendfeedbackbutton.place(relx=0.738, rely=0.525, height=43
                 , width=116)
         self.sendfeedbackbutton.configure(activebackground="#ececec")
@@ -429,7 +450,7 @@ class MentorPanel:
         self.sendfeedbackbutton.configure(highlightbackground="#d9d9d9")
         self.sendfeedbackbutton.configure(highlightcolor="black")
         self.sendfeedbackbutton.configure(pady="0")
-        self.sendfeedbackbutton.configure(text='''Button''')
+        self.sendfeedbackbutton.configure(text='''Send feedback''')
         self.sendfeedbackbutton.configure(width=116)
 
         self.RoleLabel = tk.Label(self.MentorCntPnl)
@@ -548,5 +569,7 @@ class MentorPanel:
         MentorList["rolecombobox"] = self.rolecombobox
         MentorList["newPhraseEntry"] = self.newPhraseEntry
         MentorList["NewUserID"] = self.NewUserID
+        MentorList["EntryMessageUser"] = self.EntryMessageUser
+        MentorList["SendFeedbackEntry"] = self.SendFeedbackEntry
 
 

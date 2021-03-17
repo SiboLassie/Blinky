@@ -6,13 +6,18 @@
 #    Mar 09, 2019 05:11:15 AM +0200  platform: Windows NT
 ##Alex
 # Jira test
-import sys
-import NewUserRegister
+
+
+import os
 from functools import partial
-import RegisterNewMentor
-import LogicGui
+##import keyboard
+from threading import Thread as thread
 import GUIandDBCommunication
-import tkMessageBox
+import LogicGui
+import Forgot_password
+import support
+import cv2
+
 
 try:
     import Tkinter as tk
@@ -28,6 +33,10 @@ except ImportError:
     
 global root
 root = None
+global msgDict
+msgDict = {}
+global flag
+flag = 0
 
 def vp_start_gui():
     '''Starting point when module is the main routine.'''
@@ -40,14 +49,18 @@ def vpReturnToMain(a):
     global val, w
     top = MainPageContainer (a)
     init(a, top)
+
 def init(top, gui, *args, **kwargs):
     global w, top_level, root
     w = gui
     top_level = top
     root = top
     
+def call_keyboard(event):
+    ts = thread(target=os.system, args=("osk",))
+    ts.daemon = True
+    ts.start()
 
-    
 w = None
 def create_MainPageContainer(root, *args, **kwargs):
     '''Starting point when module is imported by another program.'''
@@ -64,10 +77,8 @@ def destroy_MainPageContainer():
     
 
 class MainPageContainer:
- 
 
     def __init__(self, top=None):
-
         '''This class configures and populates the toplevel window.
            top is the toplevel containing window.'''
         _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
@@ -84,9 +95,8 @@ class MainPageContainer:
             top.configure(highlightcolor="black")
         self.LoginList = {}
 
-
-
         self.MainPageFrame = tk.Frame(top)
+
         self.MainPageFrame.place(relx=0.094, rely=0.027, relheight=0.857
                 , relwidth=0.832)
         self.MainPageFrame.configure(relief='groove')
@@ -123,7 +133,10 @@ class MainPageContainer:
         self.Login.configure(pady="0")
         self.Login.configure(text='''Login''')
 
-        self.ForgotPassword = tk.Button(self.MainPageFrame)
+
+
+
+        self.ForgotPassword = tk.Button(self.MainPageFrame, command=Forgot_password.Forgot_password_U)
         self.ForgotPassword.place(relx=0.375, rely=0.873, height=63, width=146)
         self.ForgotPassword.configure(activebackground="#ececec")
         self.ForgotPassword.configure(activeforeground="#000000")
@@ -135,9 +148,8 @@ class MainPageContainer:
         self.ForgotPassword.configure(pady="0")
         self.ForgotPassword.configure(text='''Forgot password''')
 
-        
-        action_with_args = partial(LogicGui.LogicGui.RegNewUserWin,self, top)
-        
+
+        action_with_args = partial(LogicGui.LogicGui.RegNewUserWin, self, top)
         self.RegisterNewUser = tk.Button(self.MainPageFrame, command=action_with_args)
         self.RegisterNewUser.place(relx=0.575, rely=0.302, height=73, width=126)
         self.RegisterNewUser.configure(activebackground="#ececec")
@@ -199,6 +211,8 @@ class MainPageContainer:
         self.PassLabel.configure(text='''Password:''')
 
         self.UserNameText = tk.Entry(self.MainPageFrame)
+        self.UserNameText.bind("<1>", call_keyboard)
+
         self.UserNameText.place(relx=0.338, rely=0.571, height=24
                 , relwidth=0.255)
         self.UserNameText.configure(background="white")
@@ -211,7 +225,7 @@ class MainPageContainer:
         self.UserNameText.configure(selectbackground="#c4c4c4")
         self.UserNameText.configure(selectforeground="black")
 
-        self.PasswordText = tk.Entry(self.MainPageFrame)
+        self.PasswordText = tk.Entry(self.MainPageFrame, show="*")
         self.PasswordText.place(relx=0.338, rely=0.667, height=24
                 , relwidth=0.255)
         self.PasswordText.configure(background="white")
@@ -223,6 +237,7 @@ class MainPageContainer:
         self.PasswordText.configure(insertbackground="black")
         self.PasswordText.configure(selectbackground="#c4c4c4")
         self.PasswordText.configure(selectforeground="black")
+        self.PasswordText.bind("<1>", call_keyboard)
         
         action_with_args = partial(LogicGui.LogicGui.ShowInfo,self,top)
 
@@ -267,8 +282,7 @@ class MainPageContainer:
         
     
 if __name__ == '__main__':
-    vp_start_gui()
-
+        vp_start_gui()
 
 
 

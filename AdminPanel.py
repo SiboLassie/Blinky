@@ -7,8 +7,12 @@
 
 import sys
 import BlinkyDataBaseManagment
-import tkFileDialog
+from tkinter import filedialog
+
 import os
+
+import Forgot_password
+import sendMsgs
 from shutil import copyfile
 
 import Reports
@@ -19,6 +23,7 @@ except ImportError:
     import tkinter as tk
 import LogicGui
 from functools import partial
+from tkinter import filedialog
 
 try:
     import ttk
@@ -68,13 +73,13 @@ tempdirList = {}
 
 
 def browse(entry):
-    tempdir = tkFileDialog.askopenfilename()
+    tempdir = filedialog.askopenfilename()
     entry.insert(0, tempdir)
     tempdirList["tempdir"] = tempdir
 
 
 class AdminPanel:
-    def create_AdminPanelWin(self, top=None):
+    def create_AdminPanelWin(self,adminID, top=None):
         '''This class configures and populates the toplevel window.
            top is the toplevel containing window.'''
         _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
@@ -378,6 +383,8 @@ class AdminPanel:
         self.SndMsgToMentors.configure(foreground="#000000")
         self.SndMsgToMentors.configure(text='''Send Messages to Mentors:''')
 
+
+######################################################################################
         self.EntryMsgToMentors = tk.Entry(self.AdminOptions)
         self.EntryMsgToMentors.place(relx=0.363, rely=0.7, height=76
                                      , relwidth=0.38)
@@ -388,7 +395,9 @@ class AdminPanel:
         self.EntryMsgToMentors.configure(insertbackground="black")
         self.EntryMsgToMentors.configure(width=304)
 
-        self.SendMsgBtn = tk.Button(self.AdminOptions)
+        action_with_args = partial(sendMsgs.sendMsgtoMentorFromAdmin, adminID, self.AdminList)
+
+        self.SendMsgBtn = tk.Button(self.AdminOptions, command=action_with_args)
         self.SendMsgBtn.place(relx=0.794, rely=0.725, height=32, width=118)
         self.SendMsgBtn.configure(activebackground="#ececec")
         self.SendMsgBtn.configure(activeforeground="#000000")
@@ -510,7 +519,13 @@ class AdminPanel:
         self.EntryChangePass.configure(foreground="#000000")
         self.EntryChangePass.configure(insertbackground="black")
 
-        self.UpdatePassBtn = tk.Button(self.AdminOptions)
+
+        '''
+            find 
+        '''
+        action_with_args = partial(Forgot_password.Forgot_password_A, self.EntryChangePass,self.ChooseUserIDBox)
+
+        self.UpdatePassBtn = tk.Button(self.AdminOptions,command=action_with_args)
         self.UpdatePassBtn.place(relx=0.756, rely=0.213, height=32, width=148)
         self.UpdatePassBtn.configure(activebackground="#ececec")
         self.UpdatePassBtn.configure(activeforeground="#000000")
@@ -541,6 +556,7 @@ class AdminPanel:
         self.AdminList["MentorIDBox"] = self.ChooseUserIDBox
         self.AdminList["RemoveImage"] = self.RmvImgIDBox
         self.AdminList["PhraseEntry"] = self.EntryForWritePhrase
-        self.AdminList["RemovePhrase"] = self.RmvPhraseBox   
+        self.AdminList["RemovePhrase"] = self.RmvPhraseBox
+        self.AdminList["EntryMsgToMentors"] = self.EntryMsgToMentors
 
 
